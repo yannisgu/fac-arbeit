@@ -1,0 +1,19 @@
+<project name="projekt" default="test">
+
+  <import file="../common/include.xml"/>
+
+  <property name="main.class" value="ch.ffhs.ti.umk.skript.SkriptRunner" />
+  <property name="test.input" value="src/test/data/test.txt" />
+  <property name="test.class" value="LexerTest" />
+
+  <target name="scanner">
+    <jflex file="src/jflex/Scanner.flex" destdir="${ant.build}"
+           encoding="utf-8"/>
+  </target>
+
+  <target name="parser" depends="define-cup">
+    <cup srcfile="src/cup/Parser.cup"
+          locations="no" interface="yes" destdir="${ant.build}"/>
+  </target>
+
+</project>
