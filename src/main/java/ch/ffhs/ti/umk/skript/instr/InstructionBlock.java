@@ -6,11 +6,20 @@ public class InstructionBlock extends Instruction
 {
 
     final List<Instruction> statements;
+
+    final Instruction lastInstruction;
     
         
     public InstructionBlock(List<Instruction> statements)
     {
         this.statements = statements;
+        this.lastInstruction = null;
+    }
+
+    public InstructionBlock(List<Instruction> statements, Instruction lastInstruction)
+    {
+        this.statements = statements;
+        this.lastInstruction = lastInstruction;
     }
     
     

@@ -44,6 +44,7 @@ COMMENT   = "//".*
 ")"		{ return sym(RPAR); }
 "if"		{ return sym(IF); }
 "while"		{ return sym(WHILE); }
+"fun"		{ return sym(FUN); }
 "{"		{ return sym(LBRA); }
 "}"		{ return sym(RBRA); }
 "=="		{ return sym(EQ); }

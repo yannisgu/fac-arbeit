@@ -13,13 +13,13 @@ import java.util.Map;
  */
 public class Evaluator implements InstructionVisitor<BigInteger> {
     /** Eine Map mit Namen-Wert Paaren für Variable */
-    private Map<String, BigInteger> context;
+    private Map<String, Object> context;
 
     /**
      * Erzeugt einen Evaluator mit leerem Context und leerer FunktionsLibrary.
      */
     public Evaluator() {
-        this(new HashMap<String, BigInteger>());
+        this(new HashMap<String, Object>());
     }
 
     /**
@@ -27,7 +27,7 @@ public class Evaluator implements InstructionVisitor<BigInteger> {
      * 
      * @param context Vordefinierte Variablenwerte
      */
-    public Evaluator(Map<String, BigInteger> context) {
+    public Evaluator(Map<String, Object> context) {
         this.context = context;
     }
 
@@ -41,7 +41,12 @@ public class Evaluator implements InstructionVisitor<BigInteger> {
     @Override
     public BigInteger visitGetVariable(InstructionGetVariable instructionGetVariable) {
         if (context.containsKey(instructionGetVariable.name)) {
-            return context.get(instructionGetVariable.name);
+            Object value = context.get(instructionGetVariable.name);
+            if (value instanceof BigInteger) {
+                return (BigInteger)value;
+            }
+
+            return null;
         } else {
             throw new RuntimeException("Variable " + instructionGetVariable.name + " not initialized.");
             // TODO spezifischere Exception
@@ -128,6 +133,11 @@ public class Evaluator implements InstructionVisitor<BigInteger> {
         for (Instruction instr : instructionBlock.statements) {
             instr.acceptVisitor(this);
         }
+
+        if (instructionBlock.lastInstruction != null) {
+            return instructionBlock.lastInstruction.acceptVisitor(this);
+        }
+
         return null;
     }
 
@@ -136,6 +146,27 @@ public class Evaluator implements InstructionVisitor<BigInteger> {
         while (instructionWhile.condition.acceptVisitor(this) == BigInteger.ONE) {
             instructionWhile.script.acceptVisitor(this);
         }
+        return null;
+    }
+
+    @Override
+    public BigInteger visitFunctionCall(InstructionFunctionCall instructionFunction) {
+        if (context.containsKey(instructionFunction.name)) {
+            Object instruction = context.get(instructionFunction.name);
+            if (instruction instanceof Instruction) {
+                return ((Instruction)instruction).acceptVisitor(this);
+            }
+            else {
+                throw new RuntimeException("Function " + instructionFunction.name + " is not a function");
+            }
+        } else {
+            throw new RuntimeException("Function " + instructionFunction.name +" not defined.");
+        }
+    }
+
+    @Override
+    public BigInteger visitFunction(InstructionFunction instructionFunction) {
+        context.put(instructionFunction.name, instructionFunction.script);
         return null;
     }
 

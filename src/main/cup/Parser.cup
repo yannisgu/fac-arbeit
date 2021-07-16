@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java_cup.runtime.*;
 import ch.ffhs.ti.umk.skript.instr.*;
 
-terminal PLUS, MINUS, TIMES, DIV, MOD, POW, IF, EQ, LT, GT, GTE, LTE, WHILE, LBRA, RBRA;
+
+
+terminal PLUS, MINUS, TIMES, DIV, MOD, POW, IF, EQ, LT, GT, GTE, LTE, WHILE, LBRA, RBRA, FUN;
 terminal ASSIGN, LPAR, RPAR, SEP;
 
 terminal String NUMBER;
@@ -18,7 +20,9 @@ non terminal Instruction SUM, PRODUCT, POWER, SIMPLE_TERM;
 non terminal InstructionCondition CONDITION;
 non terminal Instruction IF_STATEMENT;
 non terminal Instruction WHILE_STATEMENT;
-non terminal Instruction BLOCK;
+non terminal Instruction BLOCK, BLOCK_RETURN;
+non terminal Instruction FUNCTION;
+non terminal Instruction FUNCTION_CALL;
 non terminal ConditionOperator CONDITION_OPARATOR;
 non terminal ENDE;
 
@@ -29,7 +33,10 @@ SCRIPT ::= STATEMENT_LIST:al SUM:s ENDE
                          {: RESULT = new InstructionScript(al, s); :}
                       ;
 
-BLOCK ::= LBRA SEP STATEMENT_LIST:s RBRA {: RESULT = new InstructionBlock(s); :};
+BLOCK ::= LBRA SEP STATEMENT_LIST:s RBRA SEP {: RESULT = new InstructionBlock(s); :};
+
+BLOCK_RETURN ::= LBRA SEP STATEMENT_LIST:sl SUM:s SEP RBRA SEP {: RESULT = new InstructionBlock(sl, s); :};
+
                
 STATEMENT_LIST ::=
                    {:  RESULT = new ArrayList<Instruction>(); :}
@@ -43,7 +50,7 @@ ENDE ::=
      |  SEP
      ;
 
-STATEMENT ::= ASSIGNMENT:s {: RESULT = s; :} | IF_STATEMENT:s {: RESULT = s; :} | WHILE_STATEMENT:s {: RESULT = s; :};
+STATEMENT ::= ASSIGNMENT:s {: RESULT = s; :} | IF_STATEMENT:s {: RESULT = s; :} | WHILE_STATEMENT:s {: RESULT = s; :} | FUNCTION:s {: RESULT = s; :};
 
 ASSIGNMENT ::= NAME:n ASSIGN SUM:s SEP
                 {: RESULT = new InstructionSetVariable(n, s); :}
@@ -84,7 +91,8 @@ SIMPLE_TERM ::= NAME:n
                 {: RESULT = InstructionConstant.integer(n); :}
              |  LPAR SUM:s RPAR
                 {: RESULT = s; :}
-             ;    
+             | FUNCTION_CALL:f {: RESULT = f; :}
+             ;
 
 
 CONDITION_OPARATOR ::= EQ {: RESULT = ConditionOperator.EQ; :} 
@@ -106,3 +114,9 @@ WHILE_STATEMENT ::= WHILE LPAR CONDITION:c RPAR BLOCK:b
                   ;
 
 
+FUNCTION_CALL ::= NAME:n LPAR RPAR
+                  {: RESULT = new InstructionFunctionCall(n); :}
+                  ;
+FUNCTION ::= FUN NAME:n LPAR RPAR BLOCK_RETURN:b
+                  {: RESULT = new InstructionFunction(n, b); :}
+                  ;

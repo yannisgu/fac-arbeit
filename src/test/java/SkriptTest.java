@@ -47,8 +47,14 @@ public class SkriptTest {
         runTest("./src/test/data/testWhile", new BigInteger("20"));
     }
 
+
+    @Test
+    public void testFunction() throws Exception {
+        runTest("./src/test/data/testFunction", new BigInteger("2"));
+    }
+
     public void runTest(String file, BigInteger expectedOutput) throws Exception {
-        Map<String, BigInteger> context = new HashMap<String, BigInteger>();
+        Map<String, Object> context = new HashMap<String, Object>();
         String script = SkriptTest.readFile(file, Charset.defaultCharset());
 
         parser parser = new parser(new Scanner(new StringReader(script)));

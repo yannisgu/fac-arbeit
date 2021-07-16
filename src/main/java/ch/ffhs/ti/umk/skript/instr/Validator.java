@@ -17,9 +17,13 @@ public class Validator implements InstructionVisitor<Object>
 {
     /** Ein Set mit den definierten Variablen. */
     private Set<String> definedVariables = new HashSet<String>();
+
+    private Set<String> definedFunctions = new HashSet<String>();
         
     /** Ein Set mit den nicht definierten Variablen. */
     private Set<String> undefinedVariables = new HashSet<String>();
+
+    private Set<String> undefinedFunctions = new HashSet<String>();
         
     /** Ein Set mit den definierten, aber nicht verwendeten Variablen. */
     private Set<String> unusedVariables = new HashSet<String>();
@@ -41,6 +45,16 @@ public class Validator implements InstructionVisitor<Object>
     public Set<String> getUnusedVariables()
     {
         return unusedVariables;
+    }
+
+    /**
+     * Liefert alle Funktionen, die verwendet werden, aber zum Zeitpunkt der Verwendung nicht definiert sind.
+     * Muss leer sein, sonst läuft Skript nicht.
+     * @return Menge der nicht definierten Variablen.
+     */
+    public Set<String> getUndefinedFunctions()
+    {
+        return undefinedFunctions;
     }
         
 
@@ -128,6 +142,9 @@ public class Validator implements InstructionVisitor<Object>
         {
             instr.acceptVisitor(this);
         }
+        if (instructionBlock.lastInstruction != null) {
+            instructionBlock.lastInstruction.acceptVisitor(this);
+        }
         return null;
     }
 
@@ -139,6 +156,18 @@ public class Validator implements InstructionVisitor<Object>
     }
 
 
+    @Override
+    public Object visitFunctionCall(InstructionFunctionCall instructionFunction) {
+        if (!definedFunctions.contains(instructionFunction.name)) {
+            undefinedFunctions.add(instructionFunction.name);
+        }
+        return null;
+    }
 
-
+    @Override
+    public Object visitFunction(InstructionFunction instructionFunction) {
+        definedFunctions.add(instructionFunction.name);
+        instructionFunction.script.acceptVisitor(this);
+        return null;
+    }
 }

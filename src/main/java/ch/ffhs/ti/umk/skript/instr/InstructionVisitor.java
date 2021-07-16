@@ -22,5 +22,9 @@ public interface InstructionVisitor<R>
 
     public R visitWhile(InstructionWhile instructionWhile);
 
+    public R visitFunctionCall(InstructionFunctionCall instructionFunction);
+
+    public R visitFunction(InstructionFunction instructionFunction);
+
 
 }

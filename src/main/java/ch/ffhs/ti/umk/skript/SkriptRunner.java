@@ -25,7 +25,7 @@ public class SkriptRunner
 {
     public static void main(String[] args)
     {
-        Map<String,BigInteger> context = new HashMap<String,BigInteger>();
+        Map<String,Object> context = new HashMap<String,Object>();
         for (;;)
         {
             try
