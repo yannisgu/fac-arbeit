@@ -123,4 +123,20 @@ public class Evaluator implements InstructionVisitor<BigInteger> {
         }
     }
 
+    @Override
+    public BigInteger visitBlock(InstructionBlock instructionBlock) {
+        for (Instruction instr : instructionBlock.statements) {
+            instr.acceptVisitor(this);
+        }
+        return null;
+    }
+
+    @Override
+    public BigInteger visitWhile(InstructionWhile instructionWhile) {
+        while (instructionWhile.condition.acceptVisitor(this) == BigInteger.ONE) {
+            instructionWhile.script.acceptVisitor(this);
+        }
+        return null;
+    }
+
 }

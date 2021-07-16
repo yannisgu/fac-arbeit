@@ -4,31 +4,36 @@ import java.util.ArrayList;
 import java_cup.runtime.*;
 import ch.ffhs.ti.umk.skript.instr.*;
 
-terminal PLUS, MINUS, TIMES, DIV, MOD, POW, IF, EQ, LT, GT, GTE, LTE;
+terminal PLUS, MINUS, TIMES, DIV, MOD, POW, IF, EQ, LT, GT, GTE, LTE, WHILE, LBRA, RBRA;
 terminal ASSIGN, LPAR, RPAR, SEP;
 
 terminal String NUMBER;
 terminal String NAME;
 
 non terminal Instruction SCRIPT;
-non terminal ArrayList<Instruction> ASSIGNMENT_LIST;
+non terminal ArrayList<Instruction> STATEMENT_LIST;
 non terminal Instruction ASSIGNMENT;
+non terminal Instruction STATEMENT;
 non terminal Instruction SUM, PRODUCT, POWER, SIMPLE_TERM;
 non terminal InstructionCondition CONDITION;
 non terminal Instruction IF_STATEMENT;
+non terminal Instruction WHILE_STATEMENT;
+non terminal Instruction BLOCK;
 non terminal ConditionOperator CONDITION_OPARATOR;
 non terminal ENDE;
 
 
 start with SCRIPT;
       
-SCRIPT ::= ASSIGNMENT_LIST:al SUM:s ENDE
+SCRIPT ::= STATEMENT_LIST:al SUM:s ENDE
                          {: RESULT = new InstructionScript(al, s); :}
                       ;
+
+BLOCK ::= LBRA SEP STATEMENT_LIST:s RBRA {: RESULT = new InstructionBlock(s); :};
                
-ASSIGNMENT_LIST ::=
+STATEMENT_LIST ::=
                    {:  RESULT = new ArrayList<Instruction>(); :}
-                |  ASSIGNMENT_LIST:al ASSIGNMENT:a 
+                |  STATEMENT_LIST:al STATEMENT:a 
                    {:  RESULT = al;
                        RESULT.add(a); 
                    :}
@@ -38,11 +43,10 @@ ENDE ::=
      |  SEP
      ;
 
+STATEMENT ::= ASSIGNMENT:s {: RESULT = s; :} | IF_STATEMENT:s {: RESULT = s; :} | WHILE_STATEMENT:s {: RESULT = s; :};
 
 ASSIGNMENT ::= NAME:n ASSIGN SUM:s SEP
                 {: RESULT = new InstructionSetVariable(n, s); :}
-               | IF_STATEMENT:s
-                {: RESULT = s; :}
               ;
 
 
@@ -96,3 +100,9 @@ CONDITION ::= SUM:a CONDITION_OPARATOR:operator SUM:b
 IF_STATEMENT ::= IF LPAR CONDITION:c RPAR ASSIGNMENT:s
                   {: RESULT = new InstructionIf(c, s); :}
                   ;
+         
+WHILE_STATEMENT ::= WHILE LPAR CONDITION:c RPAR BLOCK:b
+                  {: RESULT = new InstructionWhile(c, b); :}
+                  ;
+
+

@@ -122,6 +122,22 @@ public class Validator implements InstructionVisitor<Object>
         return null;
     }
 
+    @Override
+    public Object visitBlock(InstructionBlock instructionBlock) {
+        for (Instruction instr : instructionBlock.statements)
+        {
+            instr.acceptVisitor(this);
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitWhile(InstructionWhile instructionWhile) {
+        instructionWhile.condition.acceptVisitor(this);
+        instructionWhile.script.acceptVisitor(this);
+        return null;
+    }
+
 
 
 

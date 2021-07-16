@@ -43,11 +43,15 @@ COMMENT   = "//".*
 "("		{ return sym(LPAR); }
 ")"		{ return sym(RPAR); }
 "if"		{ return sym(IF); }
+"while"		{ return sym(WHILE); }
+"{"		{ return sym(LBRA); }
+"}"		{ return sym(RBRA); }
 "=="		{ return sym(EQ); }
 ">"		{ return sym(GT); }
 "<"		{ return sym(LT); }
 ">="		{ return sym(GTE); }
 "<="		{ return sym(LTE); }
+
 
 [0-9]+  { return symVal(NUMBER); }
 ([:jletter:]|_)([:jletterdigit:]|_)*	{return symVal(NAME); }

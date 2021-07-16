@@ -37,11 +37,19 @@ import ch.ffhs.ti.umk.skript.parser.Scanner;
 
 public class SkriptTest {
 
-    /** Tests that the calculator lexer behaves as expected. */
     @Test
-    public void test() throws Exception {
+    public void testIf() throws Exception {
+        runTest("./src/test/data/testIf", new BigInteger("28"));
+    }
+
+    @Test
+    public void testWhile() throws Exception {
+        runTest("./src/test/data/testWhile", new BigInteger("20"));
+    }
+
+    public void runTest(String file, BigInteger expectedOutput) throws Exception {
         Map<String, BigInteger> context = new HashMap<String, BigInteger>();
-        String script = SkriptTest.readFile(("./src/test/data/skript"), Charset.defaultCharset());
+        String script = SkriptTest.readFile(file, Charset.defaultCharset());
 
         parser parser = new parser(new Scanner(new StringReader(script)));
         Symbol symbol = parser.parse();
@@ -56,7 +64,7 @@ public class SkriptTest {
         } else {
             Evaluator evaluator = new Evaluator(context);
             BigInteger result = instr.acceptVisitor(evaluator);
-            assertThat(result).isEqualTo(new BigInteger("28"));
+            assertThat(result).isEqualTo(expectedOutput);
         }
     }
 

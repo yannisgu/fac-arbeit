@@ -18,5 +18,9 @@ public interface InstructionVisitor<R>
 
     public R visitCondition(InstructionCondition instructionCondition);
 
+    public R visitBlock(InstructionBlock instructionBlock);
+
+    public R visitWhile(InstructionWhile instructionWhile);
+
 
 }
