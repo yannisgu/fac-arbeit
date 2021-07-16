@@ -44,6 +44,10 @@ COMMENT   = "//".*
 ")"		{ return sym(RPAR); }
 "if"		{ return sym(IF); }
 "=="		{ return sym(EQ); }
+">"		{ return sym(GT); }
+"<"		{ return sym(LT); }
+">="		{ return sym(GTE); }
+"<="		{ return sym(LTE); }
 
 [0-9]+  { return symVal(NUMBER); }
 ([:jletter:]|_)([:jletterdigit:]|_)*	{return symVal(NAME); }

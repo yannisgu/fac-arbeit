@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java_cup.runtime.*;
 import ch.ffhs.ti.umk.skript.instr.*;
 
-terminal PLUS, MINUS, TIMES, DIV, MOD, POW, IF, EQ;
+terminal PLUS, MINUS, TIMES, DIV, MOD, POW, IF, EQ, LT, GT, GTE, LTE;
 terminal ASSIGN, LPAR, RPAR, SEP;
 
 terminal String NUMBER;
@@ -16,7 +16,9 @@ non terminal Instruction ASSIGNMENT;
 non terminal Instruction SUM, PRODUCT, POWER, SIMPLE_TERM;
 non terminal InstructionCondition CONDITION;
 non terminal Instruction IF_STATEMENT;
+non terminal ConditionOperator CONDITION_OPARATOR;
 non terminal ENDE;
+
 
 start with SCRIPT;
       
@@ -36,9 +38,14 @@ ENDE ::=
      |  SEP
      ;
 
+
 ASSIGNMENT ::= NAME:n ASSIGN SUM:s SEP
                 {: RESULT = new InstructionSetVariable(n, s); :}
+               | IF_STATEMENT:s
+                {: RESULT = s; :}
               ;
+
+
            
        
 SUM ::= PRODUCT:p
@@ -75,10 +82,17 @@ SIMPLE_TERM ::= NAME:n
                 {: RESULT = s; :}
              ;    
 
-CONDITION ::= SUM:a EQ SUM:b 
-               {: RESULT = new InstructionCondition(ConditionOperator.EQ, a, b); :}
+
+CONDITION_OPARATOR ::= EQ {: RESULT = ConditionOperator.EQ; :} 
+                     | GT {: RESULT = ConditionOperator.GT; :} 
+                     | LT  {: RESULT = ConditionOperator.LT; :} 
+                     | GTE  {: RESULT = ConditionOperator.GTE; :} 
+                     | LTE {: RESULT = ConditionOperator.LTE; :};
+
+CONDITION ::= SUM:a CONDITION_OPARATOR:operator SUM:b 
+               {: RESULT = new InstructionCondition(operator, a, b); :}
                ;
 
-IF_STATEMENT ::= IF LPAR CONDITION:c RPAR SCRIPT:s
+IF_STATEMENT ::= IF LPAR CONDITION:c RPAR ASSIGNMENT:s
                   {: RESULT = new InstructionIf(c, s); :}
                   ;

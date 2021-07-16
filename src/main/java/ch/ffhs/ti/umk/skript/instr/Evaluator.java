@@ -94,16 +94,33 @@ public class Evaluator implements InstructionVisitor<BigInteger> {
 
     @Override
     public BigInteger visitIf(InstructionIf instructionIf) {
-        if (instructionIf.acceptVisitor(this).equals(BigInteger.ONE))
-            return instructionIf.acceptVisitor(this);
+        if (instructionIf.condition.acceptVisitor(this).equals(BigInteger.ONE))
+            return instructionIf.script.acceptVisitor(this);
 
         return null;
     }
 
     @Override
     public BigInteger visitCondition(InstructionCondition instructionCondition) {
-        return instructionCondition.leftOperand.acceptVisitor(this) == instructionCondition.rightOperand
-                .acceptVisitor(this) ? BigInteger.ONE : BigInteger.ZERO;
+        BigInteger left = instructionCondition.leftOperand.acceptVisitor(this);
+        BigInteger right = instructionCondition.rightOperand.acceptVisitor(this);
+        switch (instructionCondition.operator) {
+            case EQ:
+                return left.equals(right) ? BigInteger.ONE : BigInteger.ZERO;
+            case NE:
+                return !left.equals(right) ? BigInteger.ONE : BigInteger.ZERO;
+            case LT:
+                return left.compareTo(right) < 0 ? BigInteger.ONE : BigInteger.ZERO;
+            case LTE:
+                return left.compareTo(right) <= 0 ? BigInteger.ONE : BigInteger.ZERO;
+            case GT:
+                return left.compareTo(right) > 0 ? BigInteger.ONE : BigInteger.ZERO;
+            case GTE:
+                return left.compareTo(right) >= 0 ? BigInteger.ONE : BigInteger.ZERO;
+            default:
+                assert false;
+                return null;
+        }
     }
 
 }
