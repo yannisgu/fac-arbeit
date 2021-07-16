@@ -47,10 +47,14 @@ public class SkriptTest {
         runTest("./src/test/data/testWhile", new BigInteger("20"));
     }
 
-
     @Test
     public void testFunction() throws Exception {
         runTest("./src/test/data/testFunction", new BigInteger("2"));
+    }
+
+    @Test
+    public void testFull() throws Exception {
+        runTest("./src/test/data/testFull", new BigInteger("40"));
     }
 
     public void runTest(String file, BigInteger expectedOutput) throws Exception {

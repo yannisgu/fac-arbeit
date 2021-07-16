@@ -105,7 +105,7 @@ CONDITION ::= SUM:a CONDITION_OPARATOR:operator SUM:b
                {: RESULT = new InstructionCondition(operator, a, b); :}
                ;
 
-IF_STATEMENT ::= IF LPAR CONDITION:c RPAR ASSIGNMENT:s
+IF_STATEMENT ::= IF LPAR CONDITION:c RPAR BLOCK:s
                   {: RESULT = new InstructionIf(c, s); :}
                   ;
          
