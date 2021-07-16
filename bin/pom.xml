@@ -86,7 +86,7 @@
               <finalName>${project.artifactId}-full-${project.version}</finalName>
               <transformers>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                  <mainClass>ch.ffhs.ti.umk.skript.SkriptRunner</mainClass>
+                  <mainClass>ch.ffhs.ti.yannis.skript.SkriptRunner</mainClass>
                 </transformer>
               </transformers>
               <artifactSet>

@@ -2,7 +2,7 @@
 
   <import file="../common/include.xml"/>
 
-  <property name="main.class" value="ch.ffhs.ti.umk.skript.SkriptRunner" />
+  <property name="main.class" value="ch.ffhs.ti.yannis.skript.SkriptRunner" />
   <property name="test.input" value="src/test/data/test.txt" />
   <property name="test.class" value="LexerTest" />
 

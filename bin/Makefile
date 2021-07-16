@@ -4,7 +4,7 @@
 #
 
 # main class
-MAIN = ch/ffhs/ti/umk/skript/SkriptRunner
+MAIN = ch/ffhs/ti/yannis/skript/SkriptRunner
 
 # test data
 TEST_IN  = src/test/data/test.txt
